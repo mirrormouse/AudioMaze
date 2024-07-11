@@ -20,13 +20,16 @@ html {
     background-color: #F5E6D3;
 }
 
-.start-screen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    text-align: center;
+.game-screen {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-touch-callout: none;
+}
+
+.game-screen canvas {
+    touch-action: none;
 }
 
 .game-title {
