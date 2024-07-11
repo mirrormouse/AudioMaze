@@ -101,9 +101,9 @@ export class AudioManager {
                 const avgY = totalWeightedY / totalWeight;
                 const relativeX = Math.sin(playerDirection) * avgX + Math.cos(playerDirection) * avgY;
                 const relativeY = Math.cos(playerDirection) * avgX - Math.sin(playerDirection) * avgY;
-                console.log('PlayerDirection:', playerDirection)
-                console.log('avgX:', avgX, 'avgY:', avgY)
-                console.log('Relative X:', relativeX, 'Relative Y:', relativeY)
+                // console.log('PlayerDirection:', playerDirection)
+                // console.log('avgX:', avgX, 'avgY:', avgY)
+                // console.log('Relative X:', relativeX, 'Relative Y:', relativeY)
                 const pan = Math.max(-1, Math.min(1, relativeX / (Math.abs(relativeY) || 1)));
                 source.panner.pan.setValueAtTime(pan, currentTime);
             } else {

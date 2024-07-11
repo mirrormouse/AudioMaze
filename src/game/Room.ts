@@ -12,6 +12,7 @@ export class Room {
 
     draw(ctx: CanvasRenderingContext2D, scale: number = 1) {
         ctx.strokeStyle = 'black';
+        ctx.lineWidth = 3 * scale;  // 線の太さを調整
         ctx.beginPath();
         this.walls.forEach(wall => {
             ctx.moveTo(wall.x1 * scale, wall.y1 * scale);

@@ -3,7 +3,7 @@ import { Room } from './Room';
 import { Player } from './Player';
 import { AudioSourcePath } from './AudioConstants';
 
-export function createStage1(canvas: HTMLCanvasElement) {
+export function createStage1(canvas: HTMLCanvasElement, onStageComplete: () => void, isFinalStage: boolean, isPortrait: boolean) {
     const roomWidth = 800;
     const roomHeight = 600;
 
@@ -37,6 +37,15 @@ export function createStage1(canvas: HTMLCanvasElement) {
         // { x: 200, y: 100, path: '/audio/source2.wav', movementPath: rectangularPath }
     ];
 
-    const game = new Game(canvas, room, player, audioSources);
+    const game = new Game(canvas,
+        room,
+        player,
+        audioSources,
+        onStageComplete,
+        isFinalStage,
+        1, // ステージ番号
+        "音源を探せ！", // ステージの指示)
+        isPortrait,
+    );
     return game;
 }

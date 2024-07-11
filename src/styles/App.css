@@ -1,0 +1,143 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body,
+html {
+    width: 100%;
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.game-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #F5E6D3;
+}
+
+.start-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+}
+
+.game-title {
+    font-size: 3rem;
+    color: #4A4A4A;
+    margin-bottom: 2rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.start-button {
+    font-size: 1.5rem;
+    padding: 1rem 2rem;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+}
+
+.start-button:hover {
+    background-color: #2980b9;
+}
+
+.start-button:active {
+    transform: scale(0.98);
+}
+
+
+.game-screen {
+    position: relative;
+    overflow: hidden;
+}
+
+.game-screen.landscape .controls {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 33.33%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.game-screen.portrait .controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40%;
+    display: flex;
+    flex-direction: row;
+}
+
+.game-screen.landscape .map-container {
+    width: 100%;
+    height: 50%;
+}
+
+.game-screen.portrait .map-container {
+    width: 50%;
+    height: 100%;
+}
+
+.game-screen.landscape .buttons {
+    width: 100%;
+    height: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-screen.portrait .buttons {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.game-button:hover {
+    background-color: #2980b9;
+}
+
+.game-button:active {
+    transform: scale(0.98);
+}
+
+.decision-button {
+    position: 'absolute';
+    right: '15%';
+    bottom: '20%';
+    transform: 'translateX(50%)';
+    font-size: '2.5em';
+    padding: '2.5% 2.5%';
+}
+
+.menu-button {
+    right: 10px;
+    bottom: 10px;
+}

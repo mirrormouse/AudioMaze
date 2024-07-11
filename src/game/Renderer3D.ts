@@ -16,6 +16,15 @@ export class Renderer3D {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d')!;
     }
+    getCanvas(): HTMLCanvasElement {
+        return this.canvas;
+    }
+    resize(width: number, height: number) {
+        this.canvas.width = width;
+        this.canvas.height = height;
+        // 必要に応じて、レンダリングパラメータを更新
+    }
+
 
     render(room: Room, player: Player) {
         if (this.wallIntersections.length === 0) {
