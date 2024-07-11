@@ -103,7 +103,6 @@ const App: React.FC = () => {
     };
 
     const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
-        event.preventDefault(); // デフォルトの動作を防ぐ
         // console.log('click', event.clientX, event.clientY);
         if (gameRef.current) {
             const rect = canvasRef.current!.getBoundingClientRect();
@@ -144,7 +143,6 @@ const App: React.FC = () => {
                         onMouseLeave={handleCanvasRelease}
                         onTouchStart={(e) => handleCanvasClick(e.touches[0] as any)}
                         onTouchEnd={handleCanvasRelease}
-                        onContextMenu={(e) => e.preventDefault()}
                     />
                     <div className="controls">
                         <div className="map-container">
