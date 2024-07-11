@@ -115,7 +115,6 @@ const App: React.FC = () => {
     };
 
     const handleCanvasRelease = () => {
-        event.preventDefault(); // デフォルトの動作を防ぐ
         console.log('release');
         if (gameRef.current) {
             gameRef.current.handleRelease();
