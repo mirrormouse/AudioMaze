@@ -96,13 +96,13 @@ export class Game {
             this.renderer3D.resize(width, height * 0.6);
             this.map2DCanvas.width = width * 0.5;
             this.map2DCanvas.height = height * 0.3;
-            this.directionButtons.resize(width, height, width, height * 0.6);
+            this.directionButtons.resize(width, height * 0.6);
         } else {
             // 横向きのレイアウト
             this.renderer3D.resize(width * 2 / 3, height);
             this.map2DCanvas.width = width / 4;
             this.map2DCanvas.height = width / 4;
-            this.directionButtons.resize(width, height, width * 2 / 3, height);
+            this.directionButtons.resize(width * 2 / 3, height);
         }
 
         this.clearScreen.resize(width, height);
@@ -157,8 +157,11 @@ export class Game {
     handleDirectionButtonClick(x: number, y: number) {
         if (this.isCleared) return;
         const direction = this.directionButtons.handleClick(x, y);
-        this.handleDirection(direction);
-        this.directionButtons.handlePress(x, y);
+        if (direction) {
+            this.handleDirection(direction);
+            this.directionButtons.handlePress(x, y);
+        }
+
     }
 
     handleDirection(direction: string) {
