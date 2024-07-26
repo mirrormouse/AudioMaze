@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createStage1 } from '@/game/Stage1';
 import { createStage2 } from '@/game/Stage2';
+
 import '@/styles/App.css';
 
 const App: React.FC = () => {
@@ -63,16 +64,20 @@ const App: React.FC = () => {
 
             const isFinalStage = currentStage === totalStages;
 
-            switch (currentStage) {
-                case 1:
-                    gameRef.current = createStage1(canvasRef.current, onStageComplete, isFinalStage, isPortrait);
-                    break;
-                case 2:
-                    gameRef.current = createStage2(canvasRef.current, onStageComplete, isFinalStage, isPortrait);
-                    break;
-                // ... 他のステージ
-            }
+            const createStage = (stageNumber: number) => {
+                switch (stageNumber) {
+                    case 1:
+                        return createStage1(canvasRef.current!, onStageComplete, isFinalStage, isPortrait);
+                    case 2:
+                        return createStage2(canvasRef.current!, onStageComplete, isFinalStage, isPortrait);
+                    default:
+                        throw new Error(`Invalid stage number: ${stageNumber}`);
+                }
+            };
 
+
+
+            gameRef.current = createStage(currentStage);
             gameRef.current.start();
             gameRef.current.resize(gameSize.width, gameSize.height, isPortrait);
         }
