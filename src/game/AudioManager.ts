@@ -4,8 +4,7 @@ import { Room } from './Room';
 interface AudioSource {
     x: number;
     y: number;
-    buffer: AudioBuffer;
-    source: AudioBufferSourceNode | null;
+    audio: HTMLAudioElement;
     panner: StereoPannerNode;
     gainNode: GainNode;
     path?: AudioSourcePath;
@@ -20,7 +19,6 @@ export class AudioManager {
     private sources: AudioSource[];
     private listener: AudioListener;
     private room: Room;
-    private audioBuffers: { [key: string]: AudioBuffer } = {};
 
     constructor(room: Room) {
         this.context = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -29,34 +27,35 @@ export class AudioManager {
         this.room = room;
     }
 
-    async loadAudio(url: string): Promise<AudioBuffer> {
-        if (this.audioBuffers[url]) {
-            return this.audioBuffers[url];
-        }
-
-        const response = await fetch(url);
-        const arrayBuffer = await response.arrayBuffer();
-        const audioBuffer = await this.context.decodeAudioData(arrayBuffer);
-        this.audioBuffers[url] = audioBuffer;
-        return audioBuffer;
-    }
-
     async addSource(x: number, y: number, audioPath: string, movementPath?: AudioSourcePath) {
-        const buffer = await this.loadAudio(audioPath);
+        console.log(`Adding audio source: ${audioPath}`);
+        const audio = new Audio(audioPath);
+        audio.crossOrigin = "anonymous";
+        await new Promise((resolve, reject) => {
+            audio.oncanplaythrough = resolve;
+            audio.onerror = reject;
+            audio.load();
+        });
+
+        const source = this.context.createMediaElementSource(audio);
         const panner = this.context.createStereoPanner();
         const gainNode = this.context.createGain();
 
+        source.connect(gainNode);
         gainNode.connect(panner);
         panner.connect(this.context.destination);
 
+        audio.loop = true;
+
         this.sources.push({
-            x, y, buffer, source: null, panner, gainNode,
+            x, y, audio, panner, gainNode,
             path: movementPath,
             currentPathIndex: 0,
             lastUpdateTime: this.context.currentTime,
             moveSpeed: 0.2,
             moveDirection: 1
         });
+        console.log(`Audio source added successfully`);
     }
 
     updateAudio(playerX: number, playerY: number, playerDirection: number) {
@@ -64,7 +63,7 @@ export class AudioManager {
 
         this.updateListenerPosition(playerX, playerY, playerDirection, currentTime);
 
-        this.sources.forEach(source => {
+        this.sources.forEach((source, index) => {
             this.updateSourcePosition(source, currentTime);
 
             const paths = this.calculateReflectedPaths(source.x, source.y, playerX, playerY);
@@ -116,26 +115,31 @@ export class AudioManager {
 
             // ドップラー効果の計算
             const directPath = paths.find(p => !p.isReflected) || paths[0];
-            if (directPath && source.source) {
+            if (directPath) {
                 const distance = Math.max(0.1, directPath.distance);
                 const dx = directPath.endX - playerX;
                 const dy = directPath.endY - playerY;
                 const totalDistance = Math.sqrt(dx * dx + dy * dy);
 
+                // 相対速度の計算を安全に行う
                 let relativeSpeed = 0;
                 if (totalDistance > 0) {
                     relativeSpeed = source.moveSpeed * source.moveDirection * (dx / totalDistance);
                 }
 
+                // ドップラーシフトの計算と範囲の制限
                 const dopplerShift = AudioConstants.SPEED_OF_SOUND / (AudioConstants.SPEED_OF_SOUND - relativeSpeed);
                 const clampedDopplerShift = Math.max(0.5, Math.min(2, dopplerShift));
 
+                // 値が有限であることを確認してから設定
                 if (isFinite(clampedDopplerShift)) {
-                    source.source.playbackRate.setValueAtTime(clampedDopplerShift, currentTime);
+                    source.audio.playbackRate = clampedDopplerShift;
                 } else {
                     console.warn('Invalid doppler shift calculated:', clampedDopplerShift);
                 }
             }
+
+            console.log(`Source ${index}: Volume=${normalizedVolume.toFixed(2)}, Pan=${source.panner.pan.value.toFixed(2)}`);
         });
     }
 
@@ -270,8 +274,8 @@ export class AudioManager {
         return Math.sqrt(dx * dx + dy * dy);
     }
 
-
     start() {
+        console.log('Starting audio playback');
         if (this.context.state === 'suspended') {
             this.context.resume().then(() => {
                 console.log('AudioContext resumed successfully');
@@ -283,24 +287,20 @@ export class AudioManager {
     }
 
     private playAllSources() {
-        this.sources.forEach(source => {
-            if (source.source) {
-                source.source.stop();
-            }
-            source.source = this.context.createBufferSource();
-            source.source.buffer = source.buffer;
-            source.source.loop = true;
-            source.source.connect(source.gainNode);
-            source.source.start();
+        this.sources.forEach((source, index) => {
+            source.audio.play().then(() => {
+                console.log(`Source ${index} started playing`);
+            }).catch(error => {
+                console.error(`Error playing audio source ${index}:`, error);
+            });
         });
     }
 
     stop() {
-        this.sources.forEach(source => {
-            if (source.source) {
-                source.source.stop();
-                source.source = null;
-            }
+        console.log('Stopping audio playback');
+        this.sources.forEach((source, index) => {
+            source.audio.pause();
+            console.log(`Source ${index} stopped`);
         });
         this.context.suspend();
     }
