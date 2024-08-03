@@ -142,7 +142,10 @@ const App: React.FC = () => {
         <div ref={containerRef} className="game-container">
             {!isGameActive ? (
                 <div className="start-screen">
-                    <h1 className="game-title">SoundSeek</h1>
+                    <div>
+                        <h1 className="game-title" style={{ display: 'inline' }}>Ready?</h1><h6 className="game-title-description" style={{ display: 'inline' }}>※イヤホン推奨</h6>
+                    </div>
+
                     <button
                         className="start-button"
                         onClick={() => setIsGameActive(true)}

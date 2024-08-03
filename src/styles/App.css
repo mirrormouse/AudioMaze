@@ -39,6 +39,13 @@ html {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.game-title-description {
+    color: #4A4A4A;
+    margin-bottom: 2rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
 .start-button {
     font-size: 1.5rem;
     padding: 1rem 2rem;
