@@ -54,7 +54,7 @@ export class AudioManager {
     private applyMobileVolumeBoost() {
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         if (isMobile) {
-            AudioConstants.VOLUME_AMPLIFICATION *= 10; // モバイルデバイスの場合、音量増幅ファクターを1.5倍に
+            AudioConstants.VOLUME_AMPLIFICATION *= 3; // モバイルデバイスの場合、音量増幅ファクターを1.5倍に
         }
     }
 
