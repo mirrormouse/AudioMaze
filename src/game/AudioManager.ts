@@ -27,16 +27,8 @@ export class AudioManager {
         this.room = room;
     }
 
-    async addSource(x: number, y: number, audioPath: string, movementPath?: AudioSourcePath) {
-        console.log(`Adding audio source: ${audioPath}`);
+    addSource(x: number, y: number, audioPath: string, movementPath?: AudioSourcePath) {
         const audio = new Audio(audioPath);
-        audio.crossOrigin = "anonymous";
-        await new Promise((resolve, reject) => {
-            audio.oncanplaythrough = resolve;
-            audio.onerror = reject;
-            audio.load();
-        });
-
         const source = this.context.createMediaElementSource(audio);
         const panner = this.context.createStereoPanner();
         const gainNode = this.context.createGain();
@@ -55,7 +47,6 @@ export class AudioManager {
             moveSpeed: 0.2,
             moveDirection: 1
         });
-        console.log(`Audio source added successfully`);
     }
 
     updateAudio(playerX: number, playerY: number, playerDirection: number) {
@@ -63,7 +54,7 @@ export class AudioManager {
 
         this.updateListenerPosition(playerX, playerY, playerDirection, currentTime);
 
-        this.sources.forEach((source, index) => {
+        this.sources.forEach(source => {
             this.updateSourcePosition(source, currentTime);
 
             const paths = this.calculateReflectedPaths(source.x, source.y, playerX, playerY);
@@ -79,6 +70,7 @@ export class AudioManager {
                 const volumeBeforeAttenuation = 1 / (distanceForVolume / 100);
                 const volume = Math.min(1, Math.max(0, volumeBeforeAttenuation * path.attenuation));
 
+
                 totalVolume += volume;
 
                 if (path.isReflected) {
@@ -90,6 +82,8 @@ export class AudioManager {
                 }
 
                 totalWeight += volume;
+
+                // 反射音の処理（実際のWeb Audio APIの実装では、ここで反射音を生成し遅延させる）
             });
 
             // 残響音の追加
@@ -107,6 +101,9 @@ export class AudioManager {
                 const avgY = totalWeightedY / totalWeight;
                 const relativeX = Math.sin(playerDirection) * avgX + Math.cos(playerDirection) * avgY;
                 const relativeY = Math.cos(playerDirection) * avgX - Math.sin(playerDirection) * avgY;
+                // console.log('PlayerDirection:', playerDirection)
+                // console.log('avgX:', avgX, 'avgY:', avgY)
+                // console.log('Relative X:', relativeX, 'Relative Y:', relativeY)
                 const pan = Math.max(-1, Math.min(1, relativeX / (Math.abs(relativeY) || 1)));
                 source.panner.pan.setValueAtTime(pan, currentTime);
             } else {
@@ -138,8 +135,6 @@ export class AudioManager {
                     console.warn('Invalid doppler shift calculated:', clampedDopplerShift);
                 }
             }
-
-            console.log(`Source ${index}: Volume=${normalizedVolume.toFixed(2)}, Pan=${source.panner.pan.value.toFixed(2)}`);
         });
     }
 
@@ -275,7 +270,6 @@ export class AudioManager {
     }
 
     start() {
-        console.log('Starting audio playback');
         if (this.context.state === 'suspended') {
             this.context.resume().then(() => {
                 console.log('AudioContext resumed successfully');
@@ -287,21 +281,15 @@ export class AudioManager {
     }
 
     private playAllSources() {
-        this.sources.forEach((source, index) => {
-            source.audio.play().then(() => {
-                console.log(`Source ${index} started playing`);
-            }).catch(error => {
-                console.error(`Error playing audio source ${index}:`, error);
+        this.sources.forEach(source => {
+            source.audio.play().catch(error => {
+                console.error('Error playing audio:', error);
             });
         });
     }
 
     stop() {
-        console.log('Stopping audio playback');
-        this.sources.forEach((source, index) => {
-            source.audio.pause();
-            console.log(`Source ${index} stopped`);
-        });
+        this.sources.forEach(source => source.audio.pause());
         this.context.suspend();
     }
 
