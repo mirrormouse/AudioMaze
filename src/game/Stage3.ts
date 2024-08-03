@@ -26,7 +26,7 @@ export function createStage3(canvas: HTMLCanvasElement, onStageComplete: () => v
     const player = new Player(50, 50, 10, 15);
 
     const audioSources = [
-        { x: 700, y: 100, path: '/audio/water.mp3' },
+        { x: 700, y: 100, path: '/audio/water_big.mp3' },
     ];
 
     const game = new Game(canvas,
