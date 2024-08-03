@@ -94,6 +94,7 @@ export class AudioManager {
             // 音量の正規化と適用
             const normalizedVolume = Math.min(1, Math.max(0.001, totalVolume));
             source.gainNode.gain.setValueAtTime(normalizedVolume, currentTime);
+            console.log('Normalized Volume:', normalizedVolume);
 
             // パンの計算
             if (totalWeight > 0) {

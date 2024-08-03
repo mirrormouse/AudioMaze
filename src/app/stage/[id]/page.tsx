@@ -156,7 +156,7 @@ const App: React.FC = () => {
                 </div>
             ) : (
                 <div className={`game-screen ${isPortrait ? 'portrait' : 'landscape'}`} style={{ width: `${gameSize.width}px`, height: `${gameSize.height}px` }}>
-                    {/* <BGMPlayer audioSrc="/audio/source1.wav" /> */}
+                    <BGMPlayer audioSrc="/audio/silent.wav" />
                     <canvas
                         ref={canvasRef}
                         width={gameSize.width}
