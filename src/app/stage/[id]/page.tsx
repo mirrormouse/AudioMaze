@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
+import BGMPlayer from './BGMPlayer';
 import { useParams, useRouter } from 'next/navigation'
 import { createStage1 } from '@/game/Stage1';
 import { createStage2 } from '@/game/Stage2';
@@ -155,6 +156,7 @@ const App: React.FC = () => {
                 </div>
             ) : (
                 <div className={`game-screen ${isPortrait ? 'portrait' : 'landscape'}`} style={{ width: `${gameSize.width}px`, height: `${gameSize.height}px` }}>
+                    {/* <BGMPlayer audioSrc="/audio/source1.wav" /> */}
                     <canvas
                         ref={canvasRef}
                         width={gameSize.width}

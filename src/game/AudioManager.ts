@@ -92,7 +92,7 @@ export class AudioManager {
             totalVolume += reverbVolume;
 
             // 音量の正規化と適用
-            const normalizedVolume = Math.min(1, Math.max(0, totalVolume));
+            const normalizedVolume = Math.min(1, Math.max(0.001, totalVolume));
             source.gainNode.gain.setValueAtTime(normalizedVolume, currentTime);
 
             // パンの計算
