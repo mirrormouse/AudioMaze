@@ -33,7 +33,7 @@ export class AudioManager {
         const source = this.context.createMediaElementSource(audio);
         const panner = this.context.createStereoPanner();
         const gainNode = this.context.createGain();
-        gainNode.gain.setValueAtTime(0.5, this.context.currentTime); // 初期音量を0.5に設定
+        gainNode.gain.setValueAtTime(1.0, this.context.currentTime); // 初期音量を0.5に設定
 
         source.connect(gainNode);
         gainNode.connect(panner);
@@ -54,7 +54,7 @@ export class AudioManager {
     private applyMobileVolumeBoost() {
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         if (isMobile) {
-            AudioConstants.VOLUME_AMPLIFICATION *= 2.0; // モバイルデバイスの場合、音量増幅ファクターを1.5倍に
+            AudioConstants.VOLUME_AMPLIFICATION *= 1.0; // モバイルデバイスの場合、音量増幅ファクターを1.5倍に
         }
     }
 

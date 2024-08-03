@@ -4,6 +4,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { createStage1 } from '@/game/Stage1';
 import { createStage2 } from '@/game/Stage2';
 import { createStage3 } from '@/game/Stage3';
+import { STAGE_BGM, DEFAULT_BGM, BGM_VOLUME } from './const';
 import '@/styles/App.css';
 
 const App: React.FC = () => {
@@ -19,6 +20,28 @@ const App: React.FC = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const gameRef = useRef<any>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+    const [isBGMPlaying, setIsBGMPlaying] = useState(false);
+    useEffect(() => {
+        if (audioRef.current instanceof HTMLAudioElement) {
+            audioRef.current.loop = true;
+            audioRef.current.volume = BGM_VOLUME[currentStage] || 0.1;
+        }
+    }, []);
+    const getBGMForStage = (stageId: number): string => {
+        return STAGE_BGM[stageId] || DEFAULT_BGM;
+    };
+
+    useEffect(() => {
+        if (audioRef.current instanceof HTMLAudioElement) {
+            audioRef.current.src = getBGMForStage(currentStage);
+            audioRef.current.load(); // 新しいソースをロード
+            if (isBGMPlaying) {
+                audioRef.current.play().catch(error => console.error("BGM playback failed:", error));
+            }
+        }
+    }, [currentStage, isBGMPlaying]);
+
 
     const totalStages = 3; // 全ステージ数
 
@@ -58,6 +81,8 @@ const App: React.FC = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+
+
     useEffect(() => {
         if (isGameActive && canvasRef.current && !gameRef.current) {
             const onStageComplete = () => {
@@ -75,10 +100,12 @@ const App: React.FC = () => {
                 case 1:
                     gameRef.current = createStage1(canvasRef.current, onStageComplete, isFinalStage, isPortrait);
                     console.log('gameRef.current', gameRef.current, 1);
+
                     break;
                 case 2:
                     gameRef.current = createStage2(canvasRef.current, onStageComplete, isFinalStage, isPortrait);
                     console.log('gameRef.current', gameRef.current, 2);
+
                     break;
                 case 3:
                     gameRef.current = createStage3(canvasRef.current, onStageComplete, isFinalStage, isPortrait);
@@ -113,6 +140,11 @@ const App: React.FC = () => {
             gameRef.current.stop();
             gameRef.current = null;
         }
+        pauseBGM();
+        if (audioRef.current instanceof HTMLAudioElement) {
+            audioRef.current.currentTime = 0;
+        }
+        setIsBGMPlaying(false);
         router.push('/');  // メインページ（ルートURL）にリダイレクト
     };
     const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
@@ -137,9 +169,31 @@ const App: React.FC = () => {
             gameRef.current.handleRelease();
         }
     };
+    const startGame = () => {
+        setIsGameActive(true);
+        if (!isBGMPlaying) {
+            playBGM();
+            setIsBGMPlaying(true);
+        }
+    };
+
+    const playBGM = () => {
+        if (audioRef.current instanceof HTMLAudioElement) {
+            audioRef.current.src = getBGMForStage(currentStage);
+            audioRef.current.load(); // 新しいソースをロード
+            audioRef.current.play().catch(error => console.error("BGM playback failed:", error));
+        }
+    };
+
+    const pauseBGM = () => {
+        if (audioRef.current instanceof HTMLAudioElement) {
+            audioRef.current.pause();
+        }
+    };
 
     return (
         <div ref={containerRef} className="game-container">
+            <audio ref={audioRef} />
             {!isGameActive ? (
                 <div className="start-screen">
                     <div>
@@ -148,14 +202,13 @@ const App: React.FC = () => {
 
                     <button
                         className="start-button"
-                        onClick={() => setIsGameActive(true)}
+                        onClick={() => { startGame(); setIsGameActive(true) }}
                     >
                         ゲームスタート
                     </button>
                 </div>
             ) : (
                 <div className={`game-screen ${isPortrait ? 'portrait' : 'landscape'}`} style={{ width: `${gameSize.width}px`, height: `${gameSize.height}px` }}>
-                    audioRef = useRef(null);
                     <canvas
                         ref={canvasRef}
                         width={gameSize.width}
@@ -168,7 +221,6 @@ const App: React.FC = () => {
                     />
                     <div className="controls">
                         <div className="map-container">
-                            {/* 2Dマップはゲーム内で描画されるため、ここでは何も表示しません */}
                         </div>
                         <div className="buttons">
                             <button

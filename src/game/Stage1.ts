@@ -44,7 +44,7 @@ export function createStage1(canvas: HTMLCanvasElement, onStageComplete: () => v
         onStageComplete,
         isFinalStage,
         1, // ステージ番号
-        "音源を探せ！", // ステージの指示)
+        "電子音を探せ！", // ステージの指示)
         isPortrait,
     );
     return game;
