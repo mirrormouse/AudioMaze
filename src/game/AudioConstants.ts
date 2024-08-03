@@ -13,6 +13,7 @@ export const AudioConstants = {
     MAX_REFLECTIONS: 4, // 最大反射回数
     REFLECTION_COEFFICIENT: 0.6, // 反射係数 (0-1)
     OBSTRUCTION_COEFFICIENT: 0.03, // 遮蔽係数 (壁を通過する音の減衰率)
+    VOLUME_AMPLIFICATION: 2.0, // 音量増幅ファクター
 };
 
 export type AudioSourcePath = {

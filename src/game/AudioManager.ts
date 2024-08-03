@@ -25,6 +25,7 @@ export class AudioManager {
         this.sources = [];
         this.listener = this.context.listener;
         this.room = room;
+        this.applyMobileVolumeBoost();
     }
 
     addSource(x: number, y: number, audioPath: string, movementPath?: AudioSourcePath) {
@@ -32,6 +33,7 @@ export class AudioManager {
         const source = this.context.createMediaElementSource(audio);
         const panner = this.context.createStereoPanner();
         const gainNode = this.context.createGain();
+        gainNode.gain.setValueAtTime(0.5, this.context.currentTime); // 初期音量を0.5に設定
 
         source.connect(gainNode);
         gainNode.connect(panner);
@@ -47,6 +49,13 @@ export class AudioManager {
             moveSpeed: 0.2,
             moveDirection: 1
         });
+    }
+
+    private applyMobileVolumeBoost() {
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        if (isMobile) {
+            AudioConstants.VOLUME_AMPLIFICATION *= 2.0; // モバイルデバイスの場合、音量増幅ファクターを1.5倍に
+        }
     }
 
     updateAudio(playerX: number, playerY: number, playerDirection: number) {
@@ -92,7 +101,7 @@ export class AudioManager {
             totalVolume += reverbVolume;
 
             // 音量の正規化と適用
-            const normalizedVolume = Math.min(1, Math.max(0.001, totalVolume));
+            const normalizedVolume = Math.min(1, Math.max(0.001, totalVolume * AudioConstants.VOLUME_AMPLIFICATION));
             source.gainNode.gain.setValueAtTime(normalizedVolume, currentTime);
             console.log('Normalized Volume:', normalizedVolume);
 
