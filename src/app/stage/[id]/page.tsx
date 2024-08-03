@@ -1,11 +1,17 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
+import { useParams, useRouter } from 'next/navigation'
 import { createStage1 } from '@/game/Stage1';
 import { createStage2 } from '@/game/Stage2';
 import '@/styles/App.css';
 
 const App: React.FC = () => {
-    const [currentStage, setCurrentStage] = useState(1);
+    const params = useParams();
+    const router = useRouter();
+    // idをint型に変換
+    const id = Array.isArray(params.id) ? parseInt(params.id[0]) : parseInt(params.id);
+    const [currentStage, setCurrentStage] = useState(id);
+
     const [isGameActive, setIsGameActive] = useState(false);
     const [gameSize, setGameSize] = useState({ width: 1200, height: 600 });
     const [isPortrait, setIsPortrait] = useState(false);
@@ -54,11 +60,12 @@ const App: React.FC = () => {
     useEffect(() => {
         if (isGameActive && canvasRef.current && !gameRef.current) {
             const onStageComplete = () => {
-                if (currentStage < totalStages) {
-                    setCurrentStage(prev => prev + 1);
-                } else {
-                    setIsGameActive(false);
-                }
+                // if (currentStage < totalStages) {
+                //     setCurrentStage(prev => prev + 1);
+                // } else {
+                //     setIsGameActive(false);
+                // }
+                handleReturnToMenu();
             };
 
             const isFinalStage = currentStage === totalStages;
@@ -66,9 +73,11 @@ const App: React.FC = () => {
             switch (currentStage) {
                 case 1:
                     gameRef.current = createStage1(canvasRef.current, onStageComplete, isFinalStage, isPortrait);
+                    console.log('gameRef.current', gameRef.current, 1);
                     break;
                 case 2:
                     gameRef.current = createStage2(canvasRef.current, onStageComplete, isFinalStage, isPortrait);
+                    console.log('gameRef.current', gameRef.current, 2);
                     break;
                 // ... 他のステージ
             }
@@ -95,13 +104,12 @@ const App: React.FC = () => {
 
     const handleReturnToMenu = () => {
         setIsGameActive(false);
-        setCurrentStage(1);
         if (gameRef.current) {
             gameRef.current.stop();
             gameRef.current = null;
         }
+        router.push('/');  // メインページ（ルートURL）にリダイレクト
     };
-
     const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
         // console.log('click', event.clientX, event.clientY);
         if (gameRef.current) {

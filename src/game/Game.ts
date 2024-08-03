@@ -65,6 +65,9 @@ export class Game {
             this.audioManager.addSource(source.x, source.y, source.path, source.movementPath);
         });
 
+        //stageNumberをコンソールに表示
+        console.log(this.stageNumber);
+
         this.update = this.update.bind(this);
 
         this.renderer3D = new Renderer3D(this.createOffscreenCanvas(800, 600));

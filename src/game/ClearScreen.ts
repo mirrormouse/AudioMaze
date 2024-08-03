@@ -48,7 +48,8 @@ export class ClearScreen {
 
         ctx.fillStyle = 'white';
         ctx.font = '20px Arial';
-        ctx.fillText(this.isFinalStage ? 'メニューに戻る' : '次のステージへ', this.width / 2, buttonY + buttonHeight / 2 + 7);
+        //ctx.fillText(this.isFinalStage ? 'メニューに戻る' : '次のステージへ', this.width / 2, buttonY + buttonHeight / 2 + 7);
+        ctx.fillText('メニューに戻る', this.width / 2, buttonY + buttonHeight / 2 + 7);
     }
 
     handleClick(x: number, y: number) {

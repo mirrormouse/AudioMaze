@@ -23,21 +23,10 @@ export function createStage2(canvas: HTMLCanvasElement, onStageComplete: () => v
     const room = new Room(roomWidth, roomHeight, walls);
     const player = new Player(50, 50, 10, 5);
 
-    const circularPath: AudioSourcePath = {
-        points: Array.from({ length: 60 }, (_, i) => {
-            const angle = (i / 60) * Math.PI * 2;
-            return {
-                x: 500 + Math.cos(angle) * 200,
-                y: 400 + Math.sin(angle) * 200
-            };
-        }),
-        speed: 100 // ピクセル/秒
-    };
+
 
     const audioSources = [
         { x: 900, y: 700, path: '/audio/source1.wav' },
-        { x: 100, y: 700, path: '/audio/source2.wav' },
-        { x: 500, y: 400, path: '/audio/source3.wav', movementPath: circularPath }
     ];
 
     const game = new Game(canvas,
