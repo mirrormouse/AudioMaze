@@ -4,40 +4,29 @@ import { Player } from './Player';
 import { AudioSourcePath } from './AudioConstants';
 
 export function createStage3(canvas: HTMLCanvasElement, onStageComplete: () => void, isFinalStage: boolean, isPortrait: boolean) {
-    const roomWidth = 1000;
-    const roomHeight = 800;
+    const roomWidth = 1200;
+    const roomHeight = 1000;
 
     const walls = [
         // 外壁
-        { x1: 0, y1: 0, x2: roomWidth, y2: 0 },
-        { x1: roomWidth, y1: 0, x2: roomWidth, y2: roomHeight },
-        { x1: roomWidth, y1: roomHeight, x2: 0, y2: roomHeight },
-        { x1: 0, y1: roomHeight, x2: 0, y2: 0 },
+        { x1: 0, y1: 0, x2: 1200, y2: 0 },
+        { x1: 1200, y1: 0, x2: 1200, y2: 1000 },
+        { x1: 1200, y1: 1000, x2: 0, y2: 1000 },
+        { x1: 0, y1: 1000, x2: 0, y2: 0 },
         // 内部の壁
-        { x1: 300, y1: 0, x2: 300, y2: 400 },
-        { x1: 700, y1: 400, x2: 700, y2: 800 },
-        { x1: 0, y1: 600, x2: 500, y2: 600 },
-        { x1: 500, y1: 200, x2: 1000, y2: 200 },
+        { x1: 300, y1: 0, x2: 700, y2: 400 },
+        { x1: 600, y1: 500, x2: 600, y2: 900 },
+        { x1: 900, y1: 0, x2: 900, y2: 600 },
+        { x1: 650, y1: 200, x2: 900, y2: 200 },
+        { x1: 0, y1: 600, x2: 400, y2: 250 },
+        { x1: 300, y1: 700, x2: 1200, y2: 700 },
     ];
 
     const room = new Room(roomWidth, roomHeight, walls);
-    const player = new Player(50, 50, 10, 5);
-
-    const circularPath: AudioSourcePath = {
-        points: Array.from({ length: 60 }, (_, i) => {
-            const angle = (i / 60) * Math.PI * 2;
-            return {
-                x: 500 + Math.cos(angle) * 200,
-                y: 400 + Math.sin(angle) * 200
-            };
-        }),
-        speed: 100 // ピクセル/秒
-    };
+    const player = new Player(50, 50, 10, 15);
 
     const audioSources = [
-        { x: 900, y: 700, path: '/audio/source1.wav' },
-        { x: 100, y: 700, path: '/audio/source2.wav' },
-        { x: 500, y: 400, path: '/audio/source3.wav', movementPath: circularPath }
+        { x: 700, y: 100, path: '/audio/water.mp3' },
     ];
 
     const game = new Game(canvas,
@@ -46,8 +35,8 @@ export function createStage3(canvas: HTMLCanvasElement, onStageComplete: () => v
         audioSources,
         onStageComplete,
         isFinalStage,
-        2, // ステージ番号
-        "音源を探せ！", // ステージの指示
+        3, // ステージ番号
+        "水滴を探せ！", // ステージの指示
         isPortrait,
     );
     return game;

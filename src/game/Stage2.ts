@@ -21,12 +21,12 @@ export function createStage2(canvas: HTMLCanvasElement, onStageComplete: () => v
     ];
 
     const room = new Room(roomWidth, roomHeight, walls);
-    const player = new Player(50, 50, 10, 5);
+    const player = new Player(50, 50, 10, 15);
 
 
 
     const audioSources = [
-        { x: 900, y: 700, path: '/audio/source1.wav' },
+        { x: 900, y: 100, path: '/audio/dog_bark.mp3' },
     ];
 
     const game = new Game(canvas,
@@ -36,7 +36,7 @@ export function createStage2(canvas: HTMLCanvasElement, onStageComplete: () => v
         onStageComplete,
         isFinalStage,
         2, // ステージ番号
-        "音源を探せ！", // ステージの指示
+        "犬を探せ！", // ステージの指示
         isPortrait,
     );
     return game;

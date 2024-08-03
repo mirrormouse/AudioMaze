@@ -20,7 +20,7 @@ export function createStage1(canvas: HTMLCanvasElement, onStageComplete: () => v
     ];
 
     const room = new Room(roomWidth, roomHeight, walls);
-    const player = new Player(50, 50, 10, 5);
+    const player = new Player(50, 50, 10, 15);
 
     const rectangularPath: AudioSourcePath = {
         points: [

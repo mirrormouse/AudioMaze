@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation'
 import { createStage1 } from '@/game/Stage1';
 import { createStage2 } from '@/game/Stage2';
+import { createStage3 } from '@/game/Stage3';
 import '@/styles/App.css';
 
 const App: React.FC = () => {
@@ -79,6 +80,10 @@ const App: React.FC = () => {
                     gameRef.current = createStage2(canvasRef.current, onStageComplete, isFinalStage, isPortrait);
                     console.log('gameRef.current', gameRef.current, 2);
                     break;
+                case 3:
+                    gameRef.current = createStage3(canvasRef.current, onStageComplete, isFinalStage, isPortrait);
+                    console.log('gameRef.current', gameRef.current, 3);
+                    break;
                 // ... 他のステージ
             }
 
@@ -117,7 +122,12 @@ const App: React.FC = () => {
             const x = event.clientX - rect.left;
             const y = event.clientY - rect.top;
             gameRef.current.handleClick(x, y);
-            gameRef.current.handleDirectionButtonClick(x, y);
+            try {
+                gameRef.current.handleDirectionButtonClick(x, y);
+            }
+            catch (e) {
+                console.log(e);
+            }
         }
     };
 
